@@ -10,6 +10,8 @@ function App() {
   const [page, setPage] = useState('home');
 
   // TODO: How doe sthe Layout component know which page to render?
+  // Using a series of logical AND operators with strict equality to check the value in page variable
+  // page is automatically set to home with the above useState
 
   return (
     <Layout selectedPage={page} onSetPage={setPage}>

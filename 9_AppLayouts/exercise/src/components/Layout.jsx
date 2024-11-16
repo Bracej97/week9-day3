@@ -10,9 +10,10 @@ const pages = [
 const Layout = ({ children, selectedPage, onSetPage }) => {
 
   // TODO: what's stored in children, selectedPage, and onSetPage?
+  // children shows everything that is contained with the open and close tag
 
   const renderPageLinks = () => {
-        
+
     // TODO: What does this function do?
     return pages.map(page => (
        <li
@@ -21,7 +22,7 @@ const Layout = ({ children, selectedPage, onSetPage }) => {
             ...styles.sidebarLink,
             ...(page.key === selectedPage ? styles.selected : {}),
           }}
-          onClick={() => onSetPage(page.key)}
+          onClick={() => onSetPage(page.key)} // pass in the key to onSetPage which has been set to setPage in the App.jsx file
         >
           {page.name}
         </li>
@@ -50,7 +51,7 @@ const Layout = ({ children, selectedPage, onSetPage }) => {
 
       {/* Footer */}
       <Footer />
-     
+
     </div>
   );
 };

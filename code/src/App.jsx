@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [maxLength, setMaxLength] = useState(10);
+  const [maxLength, setMaxLength] = useState('');
   const [catFacts, setCatFacts] = useState([]);
-  
+  const [error, setError] = useState(null);
+  const [statusInfo, setStatusInfo] = useState(null)
+
   // Handles input changes
   const handleChange = (e) => {
     setMaxLength(e.target.value);
@@ -11,21 +14,30 @@ function App() {
 
   // Handles search click to get status info
   const handleSearch = async () => {
-    
+
+    console.log(maxLength);
+
+    if (!maxLength > 0) {
+      setError("Please enter a Maximum Length.");
+    }
+
+
+    setError(null); // Clear previous error
     try {
-      const response = await fetch(`https://catfact.ninja/facts?limit=${maxLength}`);
-      
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+      const response = await axios.get(`https://catfact.ninja/facts?limit=${maxLength}`);
 
-      const data = await response.json();
-      console.log(data);
+      if (!response.status == 200) {
+            setError("Network response was not ok");
+          }
 
-      setCatFacts(data.data); // "data" key holds the array of cat facts
+      // destructure the data from the response
+      const { data } = response.data
+      console.log(response.data);
+
+      setCatFacts(data);
     } catch (err) {
-      console.error(err);
-      setCatFacts([]); // Clear previous facts if any
+      setError("Could not retrieve information. Please check the status code.");
+      setStatusInfo(null);
     }
   };
 
@@ -43,15 +55,25 @@ function App() {
         Search
       </button>
 
-        <div style={{ marginTop: '20px' }}>
-          <h2>Here are {catFacts.length} Cat Facts</h2>
-          <ul>
-            {catFacts.map((fact, index) => (
-              <li key={index}>{fact.fact}</li>
-            ))}
-          </ul>
-        </div>
-      
+        { /* TODO: Display error message if there is an error */}
+
+        { /* TODO: Display facts if it exists */}
+        {!error == null && <h2>{setError}</h2>}
+        {!catFacts.length == 0 ?
+
+          <div style={{ marginTop: '20px' }}>
+            <h2>Here are {catFacts.length} Cat Facts</h2>
+            <ul>
+              {catFacts.map((fact, index) => (
+                <li key={index}>{fact.fact}</li>
+              ))}
+            </ul>
+          </div>
+        : <div style={{ marginTop: '20px' }}>
+            <h2>There are no cat facts to display!</h2>
+          </div>
+        }
+
     </div>
   );
 }
